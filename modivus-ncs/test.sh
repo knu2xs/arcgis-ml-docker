@@ -1,0 +1,2 @@
+IMAGE_NAME=${PWD##*/}
+echo $IMAGE_NAME
