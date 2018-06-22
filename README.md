@@ -1,10 +1,14 @@
 # Docker Image Templates
 
-Getting an environemnt configured to work with machine learning and the Python API requires getting _quite a bit of configuration_ to get set up and running. An additional consideration is many of the features of the Python API supporting machine learning, notably the SpatialDataFrame, are under active development. As a result, it can be advantagous to also have access to an environemnt with the latest daily build to test against as well.
+Getting an environemnt configured to work with machine learning and the Python API requires some fiddling to get set up and running. Further, depending on what you are attempting to do, it is desireable to get a few other complimentary capabilities set up as well - possibly Spark and PySpark or TensorFlow and Keras. Instead of wresting to get these set up every time, I created a few Dockerfiles with supporting build scripts to streamline this process for myself between my Mac and my Windows machines. The Dockerfiles used for building these images are not very complex. They build on the excellent images provided by Jupyter.
 
-## Current Status 07Jun2018
+## Prerequsites
 
-In support of current initiatives and resources we are using for machine learning, there are currently three images set up with a standard structure including a Dockerfile defining the build and associated resources to make building and running the image locally much easier.
+Before getting started, please ensure you have [Docker]((https://store.docker.com/search?type=edition&offering=community)) installed on your machine. Once installed, if you are on a Windows machine, please ensure you also set the Docker network interface as private for file sharing to work as expected.
+
+The PowerShell command to switch the Docker network interface to private is included in the file, `dockerNatPrivate.ps1`. It contains a single command you can simply run by copying and pasting into a PowerShell session being run as an Administrator as well...
+
+`Set-NetConnectionProfile -interfacealias "vEthernet (DockerNAT)" -NetworkCategory Private`
 
 ## Images
 
@@ -29,7 +33,7 @@ The SpatialDataFrame is likely the most powerful object in the Python API suppor
 - Base Image - [jupyter/pyspark-notebook](http://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-pyspark-notebook)
 - ArcGIS Python API - Current Stable Build
 
-This image combines Jupyter's PySpark Notebook Docker container with the ArcGIS Python API. This base image includes everything from the SciPy container, along with Spark with PySpark. Then it adds the ArcGIS Python API.
+This image combines Jupyter's PySpark Notebook Docker container with the ArcGIS Python API. This base image includes everything from the SciPy image, along with Spark with PySpark. Then it adds the ArcGIS Python API.
 
 ### ArcGIS-ML-SOM
 
@@ -47,7 +51,36 @@ A few demonstrations we have created require the SOMPY package to support self-o
 This image combines Jupyter's TensorFlow Notebook Docker container with the ArcGIS Python API. This base image includes everything from the SciPy container, along with TensorFlow and Keras. Then it adds the ArcGIS Python API.
 
 ## Supporting Files in Each Image Directory
-- `build.sh` - builds the image and adds it to the local machine
-- `start.sh` - starts the image with normal Jupyter Notebook
-- `start_lab.sh` - starts the image with Jupyter Lab
-- `start_lab_sudo.sh` - starts the image with Jupyter Lab with superuser privilages
+
+These files make it a little easier to execute build and run commands with standard options. If you want an image available on your machine, run the build file, and then start the image using either the `start` to run Jupyter Notebook or `start_lab` to run Jupyter Lab (my preference). Since commands are different, I have included files supporting *nix commands with the extension `.sh`, and files supporting Windows with the extension `.bat`. Simply run the correct file for your platform.
+
+- `build` - builds the image and adds it to the local machine
+- `start` - starts the image with normal Jupyter Notebook
+- `start_lab` - starts the image with Jupyter Lab
+- `start_lab_sudo` - starts the image with Jupyter Lab with superuser privilages
+
+### Local File Access
+
+Each of the start files is configured to map the directory you will see named home in either Jupyter Notebook or Jupyter Lab to your home directory on your local machine. This enables you to persist your work between sessions. Any files saved in the filesystem of the Docker container will be lost when the Docker image is stopped. This works out of the box on any *nix operating system, but requires ensuring the network interface for Docker is set to _private_ on Windows.
+
+If on a Windows machine, if you have not already followed the prerequsite setup instructiosn above, you will need to run the command contained in the included PowerShell file, `dockerNatPrivate.ps1`. It contains a single command you can simply run by copying and pasting into a PowerShell session being run as an Administrator as well...
+
+`Set-NetConnectionProfile -interfacealias "vEthernet (DockerNAT)" -NetworkCategory Private`
+
+You can add or remove mapped locations by modifying the start file you are using. For instance, by default, the command being run to start Jupyer Labs is...
+
+- *nix - `docker run -it --rm -p 8888:8888 -v ~/:/home/jovyan/home/ -e JUPYTER_ENABLE_LAB=yes arcgis-ml`
+- Windows - `docker run -it --rm -p 8888:8888 -v %USERPROFILE%:/home/jovyan/home/ -e JUPYTER_ENABLE_LAB=yes arcgis-ml`
+
+If you are not familiar with the command line, the minimum to get an image running is really little more than...
+
+`docker run arcgis-ml`
+
+This tells docker to run the image named `arcgis-ml`. For it to do a few more things we want for efficiency's sake, we add parameters telling docker how to run our image. This is all the other stuff. The part enabling local file access to your home directory is...
+
+- *nix - `-v ~/:/home/jovyan/home/`
+- Windows - `-v %USERPROFILE%:/home/jovyan/home/`
+
+If you want to change this location, the syntax is `local_path:remote_path`. For instance, on one machine I work on, a Windows machine, most of my stuff is located in `E:\dev`. Hence, for this to show up as `dev` in the Jupyter Notebook session I modify the `run` command to look like this...
+
+- `docker run -it --rm -p 8888:8888 -v E:/dev:/home/jovyan/dev/ -e JUPYTER_ENABLE_LAB=yes arcgis-ml`

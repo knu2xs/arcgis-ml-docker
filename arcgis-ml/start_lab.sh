@@ -5,5 +5,6 @@ docker run \
     --rm \
     -p 8888:8888 \
     -v ~/:/home/jovyan/home/ \
-    $IMAGE_NAME \
-    start.sh jupyter lab
+    -e JUPYTER_ENABLE_LAB=yes \
+    $IMAGE_NAME
+    
