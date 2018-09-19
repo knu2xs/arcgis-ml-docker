@@ -87,7 +87,7 @@ If you want to change this location, the syntax is `local_path:remote_path`. For
 
 - `docker run -it --rm -p 8888:8888 -v E:/dev:/home/jovyan/dev/ -e JUPYTER_ENABLE_LAB=yes arcgis-ml`
 
-# Licensing - The MIT License
+## Licensing - The MIT License
 
 Copyright 2018 Joel McCune
 
