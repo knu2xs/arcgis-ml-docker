@@ -4,8 +4,10 @@ Getting an environemnt configured to work with machine learning and the Python A
 
 ## Prerequsites
 
+### Docker
 Before getting started, please ensure you have [Docker]((https://store.docker.com/search?type=edition&offering=community)) installed on your machine. Once installed, if you are on a Windows machine, please ensure you also set the Docker network interface as private for file sharing to work as expected.
 
+### Enable Networking (_Windows Only_)
 The PowerShell command to switch the Docker network interface to private is included in the file, `dockerNatPrivate.ps1`. It contains a single command you can simply run by copying and pasting into a PowerShell session being run as an Administrator as well...
 
 `Set-NetConnectionProfile -interfacealias "vEthernet (DockerNAT)" -NetworkCategory Private`
@@ -24,9 +26,9 @@ This is the main image combining Jupyter's SciPy Notebook Docker container with 
 - Base Image - [jupyter/scipy-notebook](http://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook)
 - ArcGIS Python API - Current Daily Build
 
-_Building this image requires being on the Esri network, either in an office location, or connected through VPN._
+_Building this image requires being on the Esri network, which means you also have to be an employee of Esri in an office location, or connected through VPN._
 
-The SpatialDataFrame is likely the most powerful object in the Python API supporting machine learning. It also is rather young. Our forays into combining the worlds of Esri and machine learning using the SpatialDataFrame pushes this new technology really hard, and in the process, exposes vulnerabilities, shortcomings, and bugs. Fortunately, the team working on the Python API is very receptive to feedback. Hence, when working with the Python API in conjunction with machine learning, and encountering issues, it is extremely beneficial to also be able to test against the current daily builds to see if the issue has been addressed. As a result, this image enables quickly building an identical environemnt to the ArcGIS-ML image, but with the current daily build.
+The Spatialy Enabled DataFrame (SEDF) is likely most useful object in the Python API for data science and machine learning. It also is rather young. Frequently, my forays into combining the worlds of Esri and machine learning using the SEDF pushes this new technology really hard, and in the process exposes vulnerabilities. Fortunately, the team working on the Python API is very receptive to feedback and pull requests. Hence, when working with the Python API in conjunction with machine learning, and encountering issues, it is extremely beneficial to also be able to test against the current daily builds to see if the issue has been addressed. As a result, this image enables quickly building an identical environemnt to the ArcGIS-ML image, but with the current daily build.
 
 ### ArcGIS-ML-PySpark
 
@@ -57,7 +59,7 @@ These files make it a little easier to execute build and run commands with stand
 - `build` - builds the image and adds it to the local machine
 - `start` - starts the image with normal Jupyter Notebook
 - `start_lab` - starts the image with Jupyter Lab
-- `start_lab_sudo` - starts the image with Jupyter Lab with superuser privilages
+- `start_lab_sudo` - starts the image with Jupyter Lab with superuser privilages (I've only set these up with 
 
 ### Local File Access
 
@@ -84,3 +86,13 @@ This tells docker to run the image named `arcgis-ml`. For it to do a few more th
 If you want to change this location, the syntax is `local_path:remote_path`. For instance, on one machine I work on, a Windows machine, most of my stuff is located in `E:\dev`. Hence, for this to show up as `dev` in the Jupyter Notebook session I modify the `run` command to look like this...
 
 - `docker run -it --rm -p 8888:8888 -v E:/dev:/home/jovyan/dev/ -e JUPYTER_ENABLE_LAB=yes arcgis-ml`
+
+# Licensing - The MIT License
+
+Copyright 2018 Joel McCune
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
