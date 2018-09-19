@@ -1,39 +1,38 @@
 FROM jupyter/pyspark-notebook AS build
 
-# Install Conda packages
+# add conda-forge and esri to list of channels
+RUN conda config --prepend channels esri
+RUN conda config --prepend channels conda-forge
+
+# ensure most recent version of Conda is installed
+RUN conda update -n base conda
+
+# update all outdated packages
+RUN conda update --all
+
+# Install new packages
 RUN conda install -y \
-    unzip \
-    pandas \
-    lxml \
-    html5lib \
+    arcgis \
     beautifulsoup4 \
-    matplotlib \
-    pillow \
     bokeh \
+    fiona \
+    geopandas \
+    html5lib \
+    inflection \
+    jupyterlab \
+    keyring \
+    libgdal \
+    lxml \
+    matplotlib \
+    ncurses \
     numpy \
-    seaborn \
-    scikit-image \
-    scikit-learn \
+    pandas \
+    pillow \
     pysal \
     pyshp \
-    keyring
-
-RUN conda install -y -c conda-forge \
-    shapely \
-    jupyterlab \
-    geopandas \
     rtree \
-    fiona
-
-RUN conda install -y -c esri arcgis
-
-RUN conda clean -y -a
-
-# install Modivius SDK
-# RUN mkdir -p ~/workspace
-# WORKDIR /home/jovyan/workspace
-# RUN git clone https://github.com/movidius/ncsdk.git
-# USER root
-# RUN cd /home/jovyan/workspace/ncsdk && \
-#     make install
-#    make examples
+    scikit-image \
+    scikit-learn \
+    seaborn \
+    shapely \
+    unzip

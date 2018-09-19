@@ -1,33 +1,38 @@
 FROM jupyter/scipy-notebook AS build
 
-# Install Conda packages
+# add conda-forge and esri to list of channels
+RUN conda config --prepend channels esri
+RUN conda config --prepend channels conda-forge
+
+# ensure most recent version of Conda is installed
+RUN conda update -n base conda
+
+# update all outdated packages
+RUN conda update --all
+
+# Install new packages
 RUN conda install -y \
-    unzip \
-    pandas \
-    lxml \
-    html5lib \
+    arcgis \
     beautifulsoup4 \
-    matplotlib \
-    pillow \
     bokeh \
+    fiona \
+    geopandas \
+    html5lib \
+    inflection \
+    jupyterlab \
+    keyring \
+    libgdal \
+    lxml \
+    matplotlib \
+    ncurses \
     numpy \
-    seaborn \
-    scikit-image \
-    scikit-learn \
+    pandas \
+    pillow \
     pysal \
     pyshp \
-    keyring
-
-RUN conda install -y -c conda-forge \
-    shapely \
-    jupyterlab \
-    geopandas \
     rtree \
-    fiona
-
-RUN conda install -y -c http://zion/conda/master arcgis
-
-RUN conda clean -y -a
-
-# clean everything up
-RUN conda clean -y -a
+    scikit-image \
+    scikit-learn \
+    seaborn \
+    shapely \
+    unzip
