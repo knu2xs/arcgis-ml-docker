@@ -36,3 +36,5 @@ RUN conda install -y \
     seaborn \
     shapely \
     unzip
+
+RUN conda clean -y -a
