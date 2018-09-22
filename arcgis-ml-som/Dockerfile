@@ -7,9 +7,6 @@ RUN conda config --prepend channels conda-forge
 # ensure most recent version of Conda is installed
 RUN conda update -n base conda
 
-# update all outdated packages
-RUN conda update --all
-
 # Install new packages
 RUN conda install -y \
     arcgis \
