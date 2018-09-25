@@ -1,7 +1,7 @@
 FROM jupyter/scipy-notebook AS build
 
 # add conda-forge and esri to list of channels
-RUN conda config --prepend channels esri
+RUN conda config --prepend channels http://zion/conda/master
 RUN conda config --prepend channels conda-forge
 
 # ensure most recent version of Conda is installed
